@@ -11,9 +11,24 @@ jobs:
     # A list of available CircleCI Docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/openjdk
     docker:
       - image: cimg/openjdk:11.0
+        environment:
+          DATABASE_URL: jdbc:postgresql://127.0.0.1:5432/databasename
+          DATABASE_USER: username
+          DATABASE_PASSWORD: password
+      - image: postgres:9.6
+
+
+    working_directory: ~/repo
+
     steps:
       # Checkout the code as the first step.
       - checkout
+      - run: apt-get update -qq && apt-get install -y postgresql
+      - run:
+          command: |
+            psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE databasename;"
+            psql -h 127.0.0.1 -U postgres -c "CREATE USER username WITH PASSWORD 'password'; GRANT ALL PRIVILEGES ON DATABASE databasename TO username;
+
       # Use mvn clean and package as the standard maven build phase
       - run:
           name: Build
