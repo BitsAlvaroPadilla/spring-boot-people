@@ -133,4 +133,8 @@ public class Person implements Serializable {
     public void setChildrenParent(List<Person> sonsParent) {
         this.childrenParent = sonsParent;
     }
+
+    public Long getId() {
+        return id;
+    }
 }
